@@ -31,6 +31,7 @@ from app.api.policy_impact import router as policy_impact_router
 from app.api.dashboard import router as dashboard_router
 from app.api.subscription import router as subscription_router
 from app.core.scheduler import start_scheduler, stop_scheduler
+from app.middleware.performance_middleware import PerformanceMonitoringMiddleware
 
 app = FastAPI(
     title="NitiLens Enterprise — AI Compliance SaaS Platform",
@@ -59,6 +60,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add performance monitoring middleware
+app.add_middleware(PerformanceMonitoringMiddleware)
 
 # Register API routers
 app.include_router(auth_router)
