@@ -11,14 +11,14 @@ export const authAPI = {
     const formData = new FormData();
     formData.append('username', email);
     formData.append('password', password);
-    
+
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       body: formData,
     });
     return response.json();
   },
-  
+
   register: async (data: { email: string; password: string; full_name: string; org_name: string }) => {
     const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
@@ -27,7 +27,7 @@ export const authAPI = {
     });
     return response.json();
   },
-  
+
   getMe: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -45,14 +45,14 @@ export const policiesAPI = {
     });
     return response.json();
   },
-  
+
   upload: async (token: string, file: File, metadata: any) => {
     const formData = new FormData();
     formData.append('file', file);
     Object.keys(metadata).forEach(key => {
       formData.append(key, metadata[key]);
     });
-    
+
     const response = await fetch(`${API_BASE_URL}/api/policies/upload`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
@@ -60,7 +60,7 @@ export const policiesAPI = {
     });
     return response.json();
   },
-  
+
   compare: async (token: string, policyId1: string, policyId2: string) => {
     const response = await fetch(
       `${API_BASE_URL}/api/policies/compare?policy1=${policyId1}&policy2=${policyId2}`,
@@ -68,7 +68,7 @@ export const policiesAPI = {
     );
     return response.json();
   },
-  
+
   delete: async (token: string, policyId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/policies/${policyId}`, {
       method: 'DELETE',
@@ -86,7 +86,7 @@ export const connectorsAPI = {
     });
     return response.json();
   },
-  
+
   add: async (token: string, data: any) => {
     const response = await fetch(`${API_BASE_URL}/api/connectors/add`, {
       method: 'POST',
@@ -98,7 +98,7 @@ export const connectorsAPI = {
     });
     return response.json();
   },
-  
+
   test: async (token: string, connectorId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/connectors/test/${connectorId}`, {
       method: 'POST',
@@ -106,7 +106,7 @@ export const connectorsAPI = {
     });
     return response.json();
   },
-  
+
   remove: async (token: string, connectorId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/connectors/remove/${connectorId}`, {
       method: 'DELETE',
@@ -134,7 +134,7 @@ export const complianceAPI = {
     });
     return response.json();
   },
-  
+
   getViolations: async (token: string, filters?: {
     policy_id?: string;
     department?: string;
@@ -147,7 +147,7 @@ export const complianceAPI = {
     });
     return response.json();
   },
-  
+
   getSummary: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/compliance/summary`, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -162,14 +162,14 @@ export const monitoringAPI = {
     const response = await fetch(`${API_BASE_URL}/health`);
     return response.json();
   },
-  
+
   stats: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/stats`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   metrics: async () => {
     const response = await fetch(`${API_BASE_URL}/metrics`);
     return response.text();
@@ -180,7 +180,7 @@ export const monitoringAPI = {
 export const createWebSocket = (token: string) => {
   const wsUrl = API_BASE_URL.replace('http', 'ws');
   const ws = new WebSocket(`${wsUrl}/ws?token=${token}`);
-  
+
   ws.onopen = () => {
     console.log('WebSocket connected');
     // Send heartbeat every 30 seconds
@@ -190,7 +190,7 @@ export const createWebSocket = (token: string) => {
       }
     }, 30000);
   };
-  
+
   return ws;
 };
 
@@ -211,7 +211,7 @@ export const dashboardAPI = {
     });
     return response.json();
   },
-  
+
   getOverview: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/dashboard/overview`, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -233,14 +233,14 @@ export const remediationAPI = {
     });
     return response.json();
   },
-  
+
   getCaseDetails: async (token: string, caseId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/remediation/${caseId}`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   updateStatus: async (token: string, caseId: string, status: string, comment?: string) => {
     const response = await fetch(`${API_BASE_URL}/api/remediation/update-status/${caseId}`, {
       method: 'POST',
@@ -252,7 +252,7 @@ export const remediationAPI = {
     });
     return response.json();
   },
-  
+
   addComment: async (token: string, caseId: string, comment: string) => {
     const response = await fetch(`${API_BASE_URL}/api/remediation/comment/${caseId}`, {
       method: 'POST',
@@ -264,7 +264,7 @@ export const remediationAPI = {
     });
     return response.json();
   },
-  
+
   getSummary: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/remediation/stats/summary`, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -282,28 +282,28 @@ export const riskAPI = {
     );
     return response.json();
   },
-  
+
   getHeatmap: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/risk/heatmap`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   getTrend: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/risk/trend`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   getDashboard: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/risk/dashboard`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   trainModel: async (token: string, limit = 1000) => {
     const response = await fetch(`${API_BASE_URL}/api/risk/train-model`, {
       method: 'POST',
@@ -333,14 +333,14 @@ export const policyImpactAPI = {
     });
     return response.json();
   },
-  
+
   getHistory: async (token: string, policyId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/policy-impact/history/${policyId}`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   getReport: async (token: string, policyId: string) => {
     const response = await fetch(`${API_BASE_URL}/api/policy-impact/report/${policyId}`, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -357,21 +357,21 @@ export const subscriptionAPI = {
     });
     return response.json();
   },
-  
+
   getUsage: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/subscription/usage`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   listPlans: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/subscription/plans`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     return response.json();
   },
-  
+
   upgrade: async (token: string, planName: string) => {
     const response = await fetch(`${API_BASE_URL}/api/subscription/upgrade`, {
       method: 'POST',
@@ -387,7 +387,7 @@ export const subscriptionAPI = {
     }
     return response.json();
   },
-  
+
   cancel: async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/api/subscription/cancel`, {
       method: 'POST',
@@ -397,6 +397,51 @@ export const subscriptionAPI = {
       const error = await response.json();
       throw new Error(error.detail || 'Failed to cancel subscription');
     }
+    return response.json();
+  },
+};
+
+// NitiGuard AI Agent
+export const agentAPI = {
+  chat: async (token: string, message: string, conversationId?: string | null, isVoice = false) => {
+    const response = await fetch(`${API_BASE_URL}/api/agent/chat`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message,
+        conversation_id: conversationId,
+        is_voice: isVoice,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to send message');
+    return response.json();
+  },
+
+  getHistory: async (token: string, conversationId: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/agent/history/${conversationId}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    return response.json();
+  },
+
+  executeAction: async (token: string, data: {
+    message: string;
+    action_type: string;
+    target_id: string;
+    conversation_id: string;
+    confirmed: boolean;
+  }) => {
+    const response = await fetch(`${API_BASE_URL}/api/agent/action`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
     return response.json();
   },
 };

@@ -441,3 +441,41 @@ class UsageTracking(Base):
     
     # Relationships
     organization = relationship("Organization")
+
+
+# Scan History (referenced by agent context builder)
+class ScanHistory(Base):
+    __tablename__ = "scan_history"
+
+    scan_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    org_id = Column(UUID(as_uuid=True), ForeignKey("organizations.org_id", ondelete="CASCADE"), nullable=False, index=True)
+
+    scan_date = Column(DateTime, default=datetime.utcnow, index=True)
+    duration_seconds = Column(Integer, default=0)
+    records_processed = Column(Integer, default=0)
+    policies_scanned = Column(Integer, default=0)
+    rules_executed = Column(Integer, default=0)
+    violations_found = Column(Integer, default=0)
+    status = Column(String(50), default="completed")
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    organization = relationship("Organization")
+
+
+# NitiGuard AI Conversation History
+class AgentConversation(Base):
+    __tablename__ = "agent_conversations"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    conversation_id = Column(String(255), nullable=False, index=True)
+    org_id = Column(UUID(as_uuid=True), ForeignKey("organizations.org_id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False, index=True)
+    role = Column(String(50))
+    message = Column(Text, nullable=False)
+    response = Column(Text)
+    intent = Column(String(100))
+    timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+
+    organization = relationship("Organization")
+    user = relationship("User")

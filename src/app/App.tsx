@@ -16,6 +16,7 @@ import { Connectors } from './pages/Connectors';
 import { Monitoring } from './pages/Monitoring';
 import { EnterpriseControlCenter } from './pages/EnterpriseControlCenter';
 import Subscription from './pages/Subscription';
+import { NitiGuardChat } from './components/NitiGuardChat';
 
 export default function App() {
   return (
@@ -39,10 +40,10 @@ export default function App() {
               <Route path="/review" element={<ReviewQueue />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/transactions" element={<AMLTransactions />} />
-              
+
               {/* Enterprise Control Center */}
               <Route path="/enterprise" element={<EnterpriseControlCenter />} />
-              
+
               {/* Enterprise Features */}
               <Route path="/remediation" element={<Remediation />} />
               <Route path="/risk" element={<Risk />} />
@@ -52,9 +53,10 @@ export default function App() {
               <Route path="/subscription" element={<Subscription />} />
               <Route path="/alerts" element={<Dashboard />} />
               <Route path="/settings" element={<Dashboard />} />
-              
+
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
+            <NitiGuardChat />
           </div>
         } />
       </Routes>

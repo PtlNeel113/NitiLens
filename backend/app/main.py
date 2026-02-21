@@ -30,6 +30,7 @@ from app.api.risk import router as risk_router
 from app.api.policy_impact import router as policy_impact_router
 from app.api.dashboard import router as dashboard_router
 from app.api.subscription import router as subscription_router
+from app.api.agent import router as agent_router
 from app.core.scheduler import start_scheduler, stop_scheduler
 from app.middleware.performance_middleware import PerformanceMonitoringMiddleware
 
@@ -77,6 +78,7 @@ app.include_router(risk_router)
 app.include_router(policy_impact_router)
 app.include_router(dashboard_router)
 app.include_router(subscription_router)
+app.include_router(agent_router)
 
 
 @app.on_event("startup")
