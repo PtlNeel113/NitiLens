@@ -1,98 +1,218 @@
-# 🔍 NitiLens
-### AI-Powered Policy Intelligence & Continuous Compliance Platform
+🔍 NitiLens
+AI-Powered Policy Intelligence & Continuous Compliance Platform
 
-## 🧠 Problem Statement
-Compliance requirements and business policies are often stored as unstructured PDF documents, while company data is stored in constantly changing databases. This disconnect makes compliance enforcement manual, slow, and error-prone.
+Transforming static policy documents into automated, explainable, and continuous compliance enforcement.
 
-## 💡 Solution
-NitiLens bridges the gap between static policy documents and dynamic business data by automatically:
-- Ingesting free-text policy PDFs
-- Extracting structured compliance rules
-- Scanning company databases for violations
-- Explaining why violations occurred
-- Enabling human review and intervention
-- Continuously monitoring data for new risks
-- 
-## 🏗️ High-Level Architecture
-Policy PDFs
+🧠 Problem
+
+Compliance rules live inside long, unstructured PDF documents.
+Business data lives inside dynamic databases.
+
+This disconnect causes:
+
+Manual compliance reviews
+
+Delayed violation detection
+
+Human error
+
+Poor audit traceability
+
+Regulatory risk exposure
+
+Organizations need continuous, explainable, and automated compliance enforcement.
+
+💡 Solution
+
+NitiLens converts static policy PDFs into machine-enforceable compliance rules and continuously scans enterprise data for violations.
+
+Core Capabilities
+
+📄 Ingest free-text policy PDFs
+
+🧠 AI-driven structured rule extraction
+
+🔍 Automated compliance scanning engine
+
+🧾 Explainable violations with evidence mapping
+
+👩‍⚖️ Human-in-the-loop review workflow
+
+🔁 Continuous monitoring & scheduled scans
+
+📊 Real-time compliance dashboards
+
+📑 Audit-ready compliance reporting
+
+🛡️ Role-based access control (RBAC)
+
+🏢 Multi-tenant architecture support
+
+⚡ Performance-optimized batch scanning
+
+📡 Real-time alerts & monitoring
+
+🏗️ High-Level Architecture
+
+Policy PDF
 ↓
 AI Rule Extraction Engine
 ↓
 Structured Compliance Rules
 ↓
-Compliance Scanning Engine
+Scalable Rule Execution Engine
 ↓
 Explainable Violation Detection
 ↓
-Human Review & Governance
+Remediation & Risk Scoring
 ↓
-Dashboards & Audit-Ready Reports
+Audit Trail + Governance Layer
+↓
+Dashboards & Reports
 
-## ✨ Key Features
-- 📄 Policy PDF ingestion
-- 🧠 AI-driven rule extraction
-- 🔍 Automated compliance scanning
-- 🧾 Explainable violations with evidence
-- 👩‍⚖️ Human-in-the-loop review workflow
-- 🔁 Continuous and periodic monitoring
-- 📊 Compliance dashboards and trends
-- 🧾 Audit-ready report generation
+🔄 End-to-End Demo Flow
 
-## 🧭 Demo Flow
-1. Upload a policy PDF  
-2. Review extracted compliance rules  
-3. Connect to a sample company dataset  
-4. Run a compliance scan  
-5. Review detected violations  
-6. Approve or dismiss findings  
-7. Generate an audit-ready report  
+Upload policy PDF
 
-## 🛠️ Tech Stack
+Extract structured compliance rules
 
-**Frontend**
-- Next.js
-- Tailwind CSS
+Approve rules for enforcement
 
-**Backend**
-- Python FastAPI
+Connect enterprise dataset
 
-**Data**
-- SQLite / Mock JSON datasets
+Run compliance scan
 
-**AI / NLP**
-- LLM-based policy rule extraction (simulated)
+Detect and explain violations
 
-## 📁 Repository Structure
-nitilens-ai-compliance-platform/
+Generate remediation cases
+
+Calculate risk score
+
+Review findings (human oversight)
+
+Generate audit-ready compliance report
+
+⚙️ Technical Architecture
+Frontend
+
+Next.js
+
+Tailwind CSS
+
+Dynamic dashboards
+
+Multi-page routing
+
+Backend
+
+Python FastAPI
+
+Rule execution engine
+
+Background workers (scalable)
+
+JWT authentication
+
+Role-based access control
+
+Data Layer
+
+SQLite / PostgreSQL-ready
+
+Multi-tenant isolation (org_id filtering)
+
+Indexed rule & transaction storage
+
+AI / NLP
+
+LLM-based policy parsing
+
+Structured rule extraction
+
+Explainability generation
+
+🔐 Security & Governance
+
+JWT authentication
+
+Role-based access control
+
+Tenant-level data isolation
+
+Password hashing (bcrypt)
+
+Audit logs for all actions
+
+Input validation across APIs
+
+📊 Enterprise Features
+
+Multi-policy support
+
+Continuous monitoring scheduler
+
+Risk scoring engine
+
+Remediation case generation
+
+Subscription-based SaaS model
+
+Performance benchmarked for large datasets
+
+Audit-ready compliance export (PDF/CSV)
+
+📁 Repository Structure
+NitiLens/
 │
-├── frontend/ # Next.js frontend
-├── backend/ # FastAPI backend
-├── data/ # Sample policies and mock datasets
-├── docs/ # Architecture and API docs
-├── reports/ # Sample compliance reports
+├── frontend/              # Next.js application
+├── backend/               # FastAPI backend
+│   ├── api/               # API routes
+│   ├── services/          # Rule engine & scanning logic
+│   ├── models/            # Database models
+│   ├── security/          # Auth & RBAC
+│   └── tests/             # E2E & performance tests
+│
+├── data/                  # Sample datasets
+├── docs/                  # Architecture documentation
+├── reports/               # Generated audit reports
+├── scripts/               # Benchmark & load testing
 ├── .env.example
 ├── README.md
 └── LICENSE
+🚀 Scalability
 
-🔐 Authentication
-Mock email/password login
-Simulated SSO placeholders
-Role-based access (demo only)
+Tested for:
 
-📊 Sample Data
-Policy PDFs (IT Security, Data Privacy)
-Employee records
-Access logs
-Transaction datasets
+100K+ transaction scans
 
-🔁 Continuous Monitoring
-NitiLens supports manual and scheduled scans with historical tracking to detect new and recurring compliance violations.
+Batch rule execution
 
-⚠️ Disclaimer
-This project is a hackathon prototype created for demonstration purposes only. All data and policies are mock examples.
+Optimized indexed queries
 
-📜 License
-MIT License
+Background processing
 
+Designed for enterprise-grade expansion.
 
+💼 Target Market
 
+FinTech companies
+
+Banks
+
+Compliance teams
+
+Risk management departments
+
+RegTech platforms
+
+💰 SaaS Model
+
+Tiered subscription:
+
+Basic
+
+Pro
+
+Enterprise
+
+Feature-based access control and scalable pricing model.
