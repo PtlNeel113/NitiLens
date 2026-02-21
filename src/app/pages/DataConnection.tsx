@@ -5,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { api, type Dataset, type AMLStats } from '../services/api';
+import { amlTransactions } from '../data/mockData';
 
 interface DatasetOption extends Dataset {
   records: number;
@@ -22,6 +23,14 @@ export function DataConnection() {
 
   const [selectedDataset, setSelectedDataset] = useState<string>('');
   const [mappingComplete, setMappingComplete] = useState(false);
+
+  const fallbackStats: AMLStats = {
+    total_transactions: 15,
+    confirmed_laundering: 9,
+    avg_amount_paid: 130903,
+    top_currencies: { 'US Dollar': 13, 'Euro': 1, 'Bitcoin': 1 },
+    payment_formats: { Wire: 7, Reinvestment: 4, ACH: 2, Cheque: 1, 'Credit Cards': 1 },
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -55,7 +64,20 @@ export function DataConnection() {
         }));
         setAmlPreview(mapped);
       } catch (e) {
-        console.error('Failed to load connection data:', e);
+        console.warn('Backend unavailable — using demo connection data');
+        setDatasets([{
+          id: 'ibm-aml',
+          name: 'IBM AML Transactions',
+          description: 'Anti-money laundering dataset with labeled transactions. 11 fields including transaction amount, currency, payment format, and laundering label.',
+          connected: true,
+          license: 'CDLA-Sharing-1.0',
+          records: 15,
+          domain: 'Anti-Money Laundering',
+          color: 'blue',
+          status: 'connected',
+        } as DatasetOption]);
+        setAmlStats(fallbackStats);
+        setAmlPreview(amlTransactions.slice(0, 4));
       } finally {
         setLoading(false);
       }

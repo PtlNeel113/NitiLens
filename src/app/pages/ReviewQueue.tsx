@@ -5,7 +5,7 @@ import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Textarea } from '../components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { extractedRules, type Violation } from '../data/mockData';
+import { extractedRules, sampleViolations, rapidTransferViolations, type Violation } from '../data/mockData';
 import { api } from '../services/api';
 
 export function ReviewQueue() {
@@ -14,13 +14,29 @@ export function ReviewQueue() {
   const [selectedViolation, setSelectedViolation] = useState<any | null>(null);
   const [comment, setComment] = useState('');
 
+  // Convert mock camelCase violations to snake_case keys matching API format
+  const toApiFormat = (v: Violation) => ({
+    id: v.id,
+    transaction_id: v.transactionId,
+    rule_id: v.ruleId,
+    rule_name: v.ruleName,
+    severity: v.severity,
+    explanation: v.explanation,
+    evidence: v.evidence,
+    status: v.status,
+    reviewer_notes: v.reviewerComment,
+    detected_at: v.detectedAt,
+    reviewed_at: v.reviewedAt,
+  });
+
   const loadViolations = async () => {
     try {
       setLoading(true);
       const data = await api.listViolations();
       setViolations(data.violations);
     } catch (error) {
-      console.error('Failed to load violations:', error);
+      console.warn('Backend unavailable — using demo violations');
+      setViolations([...sampleViolations, ...rapidTransferViolations].map(toApiFormat));
     } finally {
       setLoading(false);
     }
