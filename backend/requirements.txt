@@ -1,0 +1,51 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.6
+python-multipart==0.0.20
+pandas==2.2.3
+PyMuPDF==1.25.3
+APScheduler==3.11.0
+python-dotenv==1.0.1
+
+# Database
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+alembic==1.14.0
+
+# Redis & WebSocket
+redis==5.2.1
+websockets==14.1
+python-socketio==5.12.0
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.1
+
+# Email & Notifications
+sendgrid==6.11.0
+aiosmtplib==3.0.2
+
+# Translation & NLP
+langdetect==1.0.9
+transformers==4.47.1
+torch==2.5.1
+
+# Monitoring
+prometheus-client==0.21.1
+
+# Connectors
+pymongo==4.10.1
+pymysql==1.1.1
+cryptography==44.0.0
+
+# Async & Workers
+celery==5.4.0
+aiofiles==24.1.0
+httpx==0.28.1
+
+# Machine Learning for Anomaly Detection
+scikit-learn==1.6.1
+numpy==2.2.3
+scipy==1.15.2
+joblib==1.4.2
