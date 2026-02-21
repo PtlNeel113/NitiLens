@@ -1,0 +1,62 @@
+[
+  {
+    "id": "aml-001",
+    "description": "Single transaction exceeding $10,000 must be reported (CTR requirement)",
+    "condition": "Amount Paid > 10000",
+    "severity": "critical",
+    "source_reference": "AML Policy v2.1, Section 3.1 — Currency Transaction Report (CTR)",
+    "category": "Large Transaction Reporting",
+    "approved": true,
+    "policy_id": "pol-aml-001"
+  },
+  {
+    "id": "aml-002",
+    "description": "More than 5 transfers to the same beneficiary account within 24 hours (rapid transfer pattern)",
+    "condition": "count(To Account, 24h) > 5",
+    "severity": "high",
+    "source_reference": "AML Policy v2.1, Section 4.2 — Layering Detection",
+    "category": "Suspicious Activity",
+    "approved": true,
+    "policy_id": "pol-aml-001"
+  },
+  {
+    "id": "aml-003",
+    "description": "Structuring: round-number transactions above $5,000 (potential smurfing)",
+    "condition": "Amount Paid % 1000 == 0 AND Amount Paid > 5000",
+    "severity": "medium",
+    "source_reference": "AML Policy v2.1, Section 4.3 — Structuring & Smurfing",
+    "category": "Structuring",
+    "approved": true,
+    "policy_id": "pol-aml-001"
+  },
+  {
+    "id": "aml-004",
+    "description": "Cross-currency transaction: Payment Currency differs from Receiving Currency (layering risk)",
+    "condition": "Payment Currency != Receiving Currency",
+    "severity": "medium",
+    "source_reference": "AML Policy v2.1, Section 5.1 — Currency Conversion Controls",
+    "category": "Currency Risk",
+    "approved": true,
+    "policy_id": "pol-aml-001"
+  },
+  {
+    "id": "aml-005",
+    "description": "Transaction labeled as confirmed laundering in ground-truth data",
+    "condition": "Is Laundering == 1",
+    "severity": "critical",
+    "source_reference": "AML Policy v2.1, Section 2.1 — Confirmed Illicit Activity",
+    "category": "Confirmed Laundering",
+    "approved": true,
+    "policy_id": "pol-aml-001"
+  },
+  {
+    "id": "aml-006",
+    "description": "Cheque or wire transfer exceeding $50,000 requires enhanced due diligence",
+    "condition": "Amount Paid > 50000 AND Payment Format IN ['Cheque', 'Wire']",
+    "severity": "high",
+    "source_reference": "AML Policy v2.1, Section 3.4 — Enhanced Due Diligence (EDD)",
+    "category": "Enhanced Due Diligence",
+    "approved": true,
+    "policy_id": "pol-aml-001"
+  }
+]
