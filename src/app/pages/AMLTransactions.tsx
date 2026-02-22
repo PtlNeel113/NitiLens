@@ -3,7 +3,7 @@ import { Search, ArrowUpDown, AlertTriangle, CheckCircle, Filter, ExternalLink, 
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { type AMLTransaction } from '../data/mockData';
+import { type AMLTransaction, amlTransactions } from '../data/mockData';
 import { api, type AMLStats } from '../services/api';
 
 type SortKey = keyof AMLTransaction;
@@ -57,7 +57,18 @@ export function AMLTransactions() {
                 setOriginalTransactions(mapped);
                 setStats(amlStats);
             } catch (error) {
-                console.error('Failed to load transactions:', error);
+                console.warn('Backend unavailable — using demo transactions');
+                setOriginalTransactions(amlTransactions);
+                setStats({
+                    total_transactions: amlTransactions.length,
+                    confirmed_laundering: amlTransactions.filter(t => t.isLaundering === 1).length,
+                    avg_amount_paid: Math.round(amlTransactions.reduce((s, t) => s + t.amountPaid, 0) / amlTransactions.length),
+                    laundering_percentage: Math.round(amlTransactions.filter(t => t.isLaundering === 1).length / amlTransactions.length * 100),
+                    max_amount_paid: Math.max(...amlTransactions.map(t => t.amountPaid)),
+                    top_currencies: { 'US Dollar': 13, 'Euro': 1, 'Bitcoin': 1 },
+                    payment_formats: { Wire: 7, Reinvestment: 4, ACH: 2, Cheque: 1 },
+                    source: 'Demo (IBM AML)',
+                } as AMLStats);
             } finally {
                 setLoading(false);
             }

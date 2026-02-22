@@ -28,8 +28,11 @@ export function DataConnection() {
     total_transactions: 15,
     confirmed_laundering: 9,
     avg_amount_paid: 130903,
+    laundering_percentage: 60,
+    max_amount_paid: 1350000,
     top_currencies: { 'US Dollar': 13, 'Euro': 1, 'Bitcoin': 1 },
     payment_formats: { Wire: 7, Reinvestment: 4, ACH: 2, Cheque: 1, 'Credit Cards': 1 },
+    source: 'Demo (IBM AML)',
   };
 
   useEffect(() => {

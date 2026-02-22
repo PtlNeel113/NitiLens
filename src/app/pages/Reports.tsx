@@ -3,13 +3,28 @@ import { FileText, Download, Calendar, Shield, CheckCircle, Loader2 } from 'luci
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { extractedRules } from '../data/mockData';
+import { extractedRules, sampleViolations, rapidTransferViolations, type Violation } from '../data/mockData';
 import { api, type ComplianceSummary } from '../services/api';
 
 export function Reports() {
   const [summary, setSummary] = useState<ComplianceSummary | null>(null);
   const [violations, setViolations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Convert mock camelCase violations to snake_case keys
+  const toApiFormat = (v: Violation) => ({
+    id: v.id,
+    transaction_id: v.transactionId,
+    rule_id: v.ruleId,
+    rule_name: v.ruleName,
+    severity: v.severity,
+    explanation: v.explanation,
+    evidence: v.evidence,
+    status: v.status,
+    reviewer_notes: v.reviewerComment,
+    detected_at: v.detectedAt,
+    reviewed_at: v.reviewedAt,
+  });
 
   useEffect(() => {
     const loadData = async () => {
@@ -21,7 +36,18 @@ export function Reports() {
         setSummary(sum);
         setViolations(results.violations);
       } catch (error) {
-        console.error('Failed to load report data:', error);
+        console.warn('Backend unavailable — using demo report data');
+        setSummary({
+          total_transactions_scanned: 15,
+          total_violations: 6,
+          compliance_rate: 73.3,
+          open_violations: 4,
+          resolved_violations: 1,
+          false_positives: 0,
+          dataset_laundering_rate: 60,
+          severity_breakdown: { critical: 2, high: 1, medium: 2, low: 0 },
+        } as ComplianceSummary);
+        setViolations([...sampleViolations, ...rapidTransferViolations].map(toApiFormat));
       } finally {
         setLoading(false);
       }

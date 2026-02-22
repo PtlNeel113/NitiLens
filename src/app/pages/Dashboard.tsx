@@ -21,10 +21,12 @@ export function Dashboard() {
       console.warn('Backend unavailable — using demo dashboard data');
       setData({
         total_transactions_scanned: 15,
+        total_violations: 5,
         compliance_rate: 73.3,
         open_violations: 4,
         resolved_violations: 1,
         false_positives: 0,
+        dataset_laundering_rate: 60,
         severity_breakdown: { critical: 2, high: 1, medium: 2, low: 0 },
       } as ComplianceSummary);
     } finally {
