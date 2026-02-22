@@ -44,8 +44,8 @@ export function Navbar() {
                     key={item.path}
                     to={item.path}
                     className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${isActive(item.path)
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -53,22 +53,21 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              
+
               {/* Enterprise Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setEnterpriseOpen(!enterpriseOpen)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                    enterpriseItems.some(item => isActive(item.path))
+                  className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${enterpriseItems.some(item => isActive(item.path))
                       ? 'bg-blue-50 text-blue-700'
                       : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   <Zap className="w-4 h-4" />
                   Enterprise
                   <ChevronDown className={`w-4 h-4 transition-transform ${enterpriseOpen ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {enterpriseOpen && (
                   <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     {enterpriseItems.map((item) => {
@@ -78,11 +77,10 @@ export function Navbar() {
                           key={item.path}
                           to={item.path}
                           onClick={() => setEnterpriseOpen(false)}
-                          className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
-                            isActive(item.path)
+                          className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${isActive(item.path)
                               ? 'bg-blue-50 text-blue-700'
                               : 'text-gray-700 hover:bg-gray-50'
-                          }`}
+                            }`}
                         >
                           <Icon className="w-4 h-4" />
                           {item.label}

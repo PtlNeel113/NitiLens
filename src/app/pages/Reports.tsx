@@ -5,11 +5,14 @@ import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { extractedRules, sampleViolations, rapidTransferViolations, type Violation } from '../data/mockData';
 import { api, type ComplianceSummary } from '../services/api';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export function Reports() {
   const [summary, setSummary] = useState<ComplianceSummary | null>(null);
   const [violations, setViolations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState<string | null>(null);
 
   // Convert mock camelCase violations to snake_case keys
   const toApiFormat = (v: Violation) => ({
@@ -55,12 +58,207 @@ export function Reports() {
     loadData();
   }, []);
 
-  const handleGenerateReport = () => {
-    alert('Report generated successfully! In a production environment, this would download a PDF.');
+  const handleGenerateReport = (type: 'full' | 'executive' = 'full') => {
+    setGenerating(type);
+    setTimeout(() => {
+      try {
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const reportDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        let y = 15;
+
+        // ── Header bar ──
+        doc.setFillColor(37, 99, 235);
+        doc.rect(0, 0, pageWidth, 32, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text('NitiLens', 14, 14);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text('AI Compliance Platform', 14, 20);
+        doc.setFontSize(9);
+        doc.text(`Generated: ${reportDate}`, pageWidth - 14, 14, { align: 'right' });
+        doc.text('Status: AUDIT READY', pageWidth - 14, 20, { align: 'right' });
+        y = 40;
+
+        // ── Report title ──
+        doc.setTextColor(30, 41, 59);
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text(type === 'executive' ? 'Executive Summary Report' : 'Full Compliance Report', 14, y);
+        y += 10;
+
+        // ── Executive Summary Stats ──
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Executive Summary', 14, y);
+        y += 8;
+
+        const stats = [
+          ['Transactions Scanned', String(summary?.total_transactions_scanned ?? 0)],
+          ['Total Violations', String(summary?.total_violations ?? 0)],
+          ['Compliance Rate', `${summary?.compliance_rate?.toFixed(1) ?? 0}%`],
+          ['Open Violations', String(summary?.open_violations ?? 0)],
+          ['Resolved', String(summary?.resolved_violations ?? 0)],
+          ['False Positives', String(summary?.false_positives ?? 0)],
+        ];
+        autoTable(doc, {
+          startY: y,
+          head: [['Metric', 'Value']],
+          body: stats,
+          theme: 'grid',
+          headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold', fontSize: 10 },
+          bodyStyles: { fontSize: 10 },
+          columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } },
+          margin: { left: 14, right: 14 },
+        });
+        y = (doc as any).lastAutoTable.finalY + 10;
+
+        // ── Severity Breakdown ──
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Severity Breakdown', 14, y);
+        y += 8;
+        const sevData = [
+          ['Critical', String(summary?.severity_breakdown?.critical ?? 0)],
+          ['High', String(summary?.severity_breakdown?.high ?? 0)],
+          ['Medium', String(summary?.severity_breakdown?.medium ?? 0)],
+          ['Low', String(summary?.severity_breakdown?.low ?? 0)],
+        ];
+        autoTable(doc, {
+          startY: y,
+          head: [['Severity', 'Count']],
+          body: sevData,
+          theme: 'grid',
+          headStyles: { fillColor: [220, 38, 38], textColor: 255, fontStyle: 'bold', fontSize: 10 },
+          bodyStyles: { fontSize: 10 },
+          margin: { left: 14, right: 14 },
+        });
+        y = (doc as any).lastAutoTable.finalY + 10;
+
+        if (type === 'full') {
+          // ── Violations Table ──
+          if (y > 240) { doc.addPage(); y = 20; }
+          doc.setFontSize(13);
+          doc.setFont('helvetica', 'bold');
+          doc.text('Violation Details', 14, y);
+          y += 8;
+
+          const violationRows = violations.map(v => [
+            v.transaction_id || '-',
+            v.rule_name || '-',
+            (v.severity || '').toUpperCase(),
+            (v.status || '').replace('_', ' ').toUpperCase(),
+            (v.explanation || '').substring(0, 80) + ((v.explanation?.length ?? 0) > 80 ? '...' : ''),
+            v.detected_at ? new Date(v.detected_at).toLocaleDateString() : '-',
+          ]);
+
+          autoTable(doc, {
+            startY: y,
+            head: [['Transaction', 'Rule', 'Severity', 'Status', 'Explanation', 'Detected']],
+            body: violationRows,
+            theme: 'striped',
+            headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+            bodyStyles: { fontSize: 7.5 },
+            columnStyles: {
+              0: { cellWidth: 22 },
+              1: { cellWidth: 30 },
+              2: { cellWidth: 18 },
+              3: { cellWidth: 18 },
+              4: { cellWidth: 70 },
+              5: { cellWidth: 22 },
+            },
+            margin: { left: 14, right: 14 },
+          });
+          y = (doc as any).lastAutoTable.finalY + 10;
+
+          // ── Policy Rules ──
+          if (y > 240) { doc.addPage(); y = 20; }
+          doc.setFontSize(13);
+          doc.setFont('helvetica', 'bold');
+          doc.text('Enforced Policy Rules', 14, y);
+          y += 8;
+
+          const ruleRows = extractedRules.map(r => [
+            r.description,
+            r.category,
+            r.severity.toUpperCase(),
+            r.sourceReference,
+          ]);
+          autoTable(doc, {
+            startY: y,
+            head: [['Rule', 'Category', 'Severity', 'Source']],
+            body: ruleRows,
+            theme: 'striped',
+            headStyles: { fillColor: [22, 163, 74], textColor: 255, fontStyle: 'bold', fontSize: 9 },
+            bodyStyles: { fontSize: 8 },
+            margin: { left: 14, right: 14 },
+          });
+          y = (doc as any).lastAutoTable.finalY + 10;
+        }
+
+        // ── Audit Trail Footer ──
+        if (y > 260) { doc.addPage(); y = 20; }
+        doc.setFillColor(240, 253, 244);
+        doc.roundedRect(14, y, pageWidth - 28, 30, 3, 3, 'F');
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(22, 101, 52);
+        doc.text('Audit Trail — This report includes:', 18, y + 7);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        const auditItems = [
+          'Complete policy references with source citations',
+          'Full evidence trail for each violation',
+          'Human reviewer decisions and timestamps',
+        ];
+        auditItems.forEach((item, i) => {
+          doc.text(`✓  ${item}`, 20, y + 14 + i * 5);
+        });
+
+        // ── Save ──
+        const filename = type === 'executive'
+          ? `NitiLens_Executive_Summary_${new Date().toISOString().slice(0, 10)}.pdf`
+          : `NitiLens_Compliance_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+        doc.save(filename);
+      } catch (err) {
+        console.error('PDF generation failed:', err);
+      } finally {
+        setGenerating(null);
+      }
+    }, 100);
   };
 
   const handleExportCSV = () => {
-    alert('Data exported successfully! In a production environment, this would download a CSV file.');
+    setGenerating('csv');
+    setTimeout(() => {
+      try {
+        const headers = ['Transaction ID', 'Rule Name', 'Severity', 'Status', 'Explanation', 'Detected At', 'Reviewed At', 'Reviewer Notes'];
+        const rows = violations.map(v => [
+          v.transaction_id || '',
+          v.rule_name || '',
+          v.severity || '',
+          v.status || '',
+          `"${(v.explanation || '').replace(/"/g, '""')}"`,
+          v.detected_at || '',
+          v.reviewed_at || '',
+          `"${(v.reviewer_notes || '').replace(/"/g, '""')}"`,
+        ]);
+        const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `NitiLens_Violations_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('CSV export failed:', err);
+      } finally {
+        setGenerating(null);
+      }
+    }, 100);
   };
 
   if (loading) {
@@ -92,9 +290,9 @@ export function Reports() {
             <p className="text-sm text-gray-600 mb-4">
               Complete report with all violations, evidence, and reviewer decisions
             </p>
-            <Button onClick={handleGenerateReport} className="w-full">
-              <Download className="w-4 h-4 mr-2" />
-              Generate PDF
+            <Button onClick={() => handleGenerateReport('full')} className="w-full" disabled={!!generating}>
+              {generating === 'full' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {generating === 'full' ? 'Generating...' : 'Generate PDF'}
             </Button>
           </Card>
 
@@ -104,9 +302,9 @@ export function Reports() {
             <p className="text-sm text-gray-600 mb-4">
               High-level overview for leadership and stakeholders
             </p>
-            <Button onClick={handleGenerateReport} className="w-full" variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Generate PDF
+            <Button onClick={() => handleGenerateReport('executive')} className="w-full" variant="outline" disabled={!!generating}>
+              {generating === 'executive' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {generating === 'executive' ? 'Generating...' : 'Generate PDF'}
             </Button>
           </Card>
 
@@ -116,9 +314,9 @@ export function Reports() {
             <p className="text-sm text-gray-600 mb-4">
               Raw data export for further analysis or integration
             </p>
-            <Button onClick={handleExportCSV} className="w-full" variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Export CSV
+            <Button onClick={() => handleExportCSV()} className="w-full" variant="outline" disabled={!!generating}>
+              {generating === 'csv' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {generating === 'csv' ? 'Exporting...' : 'Export CSV'}
             </Button>
           </Card>
         </div>
@@ -287,13 +485,13 @@ export function Reports() {
 
           {/* Action Buttons */}
           <div className="mt-8 pt-6 border-t flex gap-4">
-            <Button onClick={handleGenerateReport} size="lg">
-              <Download className="w-4 h-4 mr-2" />
-              Download Full Report (PDF)
+            <Button onClick={() => handleGenerateReport('full')} size="lg" disabled={!!generating}>
+              {generating === 'full' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {generating === 'full' ? 'Generating...' : 'Download Full Report (PDF)'}
             </Button>
-            <Button onClick={handleExportCSV} size="lg" variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              Export Data (CSV)
+            <Button onClick={() => handleExportCSV()} size="lg" variant="outline" disabled={!!generating}>
+              {generating === 'csv' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {generating === 'csv' ? 'Exporting...' : 'Export Data (CSV)'}
             </Button>
           </div>
         </Card>

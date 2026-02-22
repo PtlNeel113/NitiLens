@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { Shield, Mail, ArrowRight, CheckCircle, Lock, Zap, Users, BarChart3 } from 'lucide-react';
+import { Shield, Mail, ArrowRight, CheckCircle, Lock, Zap } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card } from '../components/ui/card';
@@ -44,7 +44,7 @@ export function Login() {
               </div>
               <span className="font-bold text-3xl tracking-tight">NitiLens</span>
             </div>
-            
+
             <div className="mb-16">
               <h1 className="text-5xl font-bold mb-6 leading-tight">
                 Compliance Simplified
@@ -65,7 +65,7 @@ export function Login() {
                   <p className="text-blue-100 text-sm">24/7 continuous violation detection</p>
                 </div>
               </div>
-              
+
               <div className="flex gap-4 items-start group hover:translate-x-1 transition-transform duration-300">
                 <div className="bg-white/20 p-2.5 rounded-lg group-hover:bg-white/30 transition-all duration-300">
                   <Zap className="w-5 h-5 text-yellow-300 flex-shrink-0" />
@@ -75,7 +75,7 @@ export function Login() {
                   <p className="text-blue-100 text-sm">AI-powered analysis with explainability</p>
                 </div>
               </div>
-              
+
               <div className="flex gap-4 items-start group hover:translate-x-1 transition-transform duration-300">
                 <div className="bg-white/20 p-2.5 rounded-lg group-hover:bg-white/30 transition-all duration-300">
                   <Lock className="w-5 h-5 text-blue-200 flex-shrink-0" />
